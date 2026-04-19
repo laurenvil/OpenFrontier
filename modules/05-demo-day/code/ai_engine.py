@@ -205,3 +205,42 @@ def chat_with_notes(question, notes_context, history=None):
     )
 
     return response.choices[0].message.content
+
+
+def chat_with_study_buddy(user_message, conversation_history, notes_context=""):
+    """Study Buddy agent interaction for the webapp.
+    
+    Replaces the CLI while-loop from Module 4. 
+    Maintains memory through the conversation_history array.
+    """
+    system_instructions = f"""You are a helpful high school study assistant. 
+Your job is to help the student understand and memorize the material in 
+their notes. Follow these rules:
+1. Try to answer questions using the notes provided below.
+2. If the student asks something not covered in the notes, say so clearly, but you can still try to help using your general knowledge.
+3. Use simple, clear language appropriate for a high school student.
+4. When generating flashcards, format them with clear Q: and A: labels.
+
+STUDENT'S NOTES:
+{notes_context}"""
+
+    # Start with the system prompt
+    messages = [{"role": "system", "content": system_instructions}]
+    
+    # Add history
+    if conversation_history:
+        messages.extend(conversation_history)
+        
+    # Add the current user message
+    messages.append({"role": "user", "content": user_message})
+
+    try:
+        response = client.chat.completions.create(
+            model=AI_MODEL,
+            messages=messages,
+            temperature=0.3
+        )
+        return response.choices[0].message.content
+    except Exception as e:
+        return f"⚠️ Error connecting to AI: {str(e)}"
+

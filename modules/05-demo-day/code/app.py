@@ -307,6 +307,72 @@ def handle_search():
     return render_template("partials/search_results.html", results=results)
 
 
+# ── Chat Routes ───────────────────────────────────────────────────────
+# Replaces: The CLI agent from Module 4
+
+@app.route("/chat", methods=["GET"])
+@login_required
+def chat_page():
+    """Chat interface for the Study Buddy."""
+    # Initialize chat history in session if not present
+    if "chat_history" not in session:
+        session["chat_history"] = []
+    
+    return render_template("chat.html", 
+                           chat_history=session["chat_history"],
+                           authenticated=True)
+
+@app.route("/chat", methods=["POST"])
+@login_required
+def handle_chat():
+    """Process an incoming chat message."""
+    username = get_current_user()
+    user_message = request.form.get("message", "").strip()
+    
+    if not user_message:
+        return ""
+        
+    if "chat_history" not in session:
+        session["chat_history"] = []
+        
+    # Get user's notes to build context
+    notes = database.get_notes(username)
+    context = ""
+    if notes:
+        # We'll just append the summaries to give the AI context about their notes
+        summaries = [f"- {n['file_name']}: {n['summary']}" for n in notes if n['summary']]
+        context = "User's uploaded notes:\n" + "\n".join(summaries)
+        
+    # Generate AI response
+    ai_response = ai_engine.chat_with_study_buddy(
+        user_message, 
+        session["chat_history"], 
+        notes_context=context
+    )
+    
+    # Save to history (we only keep the last 10 messages to avoid huge session cookies)
+    history = session["chat_history"]
+    history.append({"role": "user", "content": user_message})
+    history.append({"role": "assistant", "content": ai_response})
+    
+    # Keep last 10 messages (5 exchanges)
+    session["chat_history"] = history[-10:]
+    session.modified = True
+    
+    # Render the new messages (both user and AI) as partials
+    return render_template("partials/chat_message.html", 
+                           user_msg=user_message, 
+                           ai_msg=ai_response)
+
+@app.route("/chat/clear", methods=["POST"])
+@login_required
+def clear_chat():
+    """Clear chat history."""
+    session["chat_history"] = []
+    session.modified = True
+    return ""
+
+
 # ── Error Handlers ────────────────────────────────────────────────────
 # Replaces: PageDoesNotExistRoute, Page500, AuthFailedPage
 
