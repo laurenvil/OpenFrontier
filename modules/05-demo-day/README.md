@@ -34,6 +34,7 @@ This is exactly how AI startups work:
 1. 📂 **Create categories** for their notes (Biology, History, Math, etc.)
 2. 📤 **Upload notes** (.txt files) — the AI automatically classifies them and extracts summaries + FAQs
 3. 🔍 **Search across all notes** using natural language queries powered by vector similarity
+4. 💬 **Chat with the Study Buddy** in a dedicated interface that saves your session history
 
 ### The Tech Stack
 
@@ -171,7 +172,7 @@ This is where you make it **yours**. Pick at least 2 challenges:
 - **File format support** — Extend the upload to support `.md` (Markdown) and `.csv` files
 
 ### 🥈 Silver Challenges
-- **Conversation mode** — Add a chat page where students can ask follow-up questions (use the `chat_with_notes()` function in `ai_engine.py`)
+- **Edit profiles** — Allow users to update their username or password securely
 - **Export flashcards** — Add a button that downloads generated FAQs as a `.txt` or `.csv` file
 - **Note preview** — Show the full note content when clicking on a note in the table
 

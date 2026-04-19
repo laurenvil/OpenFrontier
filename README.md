@@ -92,7 +92,7 @@ OpenFrontier/
 
 ```bash
 # 1. Clone this curriculum
-git clone https://github.com/your-org/OpenFrontier.git
+git clone https://github.com/laurenvil/OpenFrontier.git
 cd OpenFrontier
 
 # 2. Start with Module 1
