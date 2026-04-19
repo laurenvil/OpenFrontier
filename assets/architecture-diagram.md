@@ -42,9 +42,12 @@ graph TB
         T <--> Q
         Q <--> R
         Q <--> S
-        Q <--> H
-        Q <--> L
     end
+
+    %% Cross-Module Integrations
+    L ~~~ Q
+    Q -.->|Integrates| H
+    Q -.->|Integrates| L
 
     style A fill:#4a90d9,color:#fff
     style F fill:#e67e22,color:#fff
