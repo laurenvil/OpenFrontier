@@ -8,6 +8,7 @@
 # Then open: http://localhost:5000
 
 import os
+import json
 from functools import wraps
 from flask import (
     Flask, render_template, request, redirect,
@@ -312,14 +313,33 @@ def handle_search():
 
 @app.route("/chat", methods=["GET"])
 @login_required
-def chat_page():
-    """Chat interface for the Study Buddy."""
-    # Initialize chat history in session if not present
-    if "chat_history" not in session:
-        session["chat_history"] = []
+def chat_index():
+    """Chat list / new chat interface for the Study Buddy."""
+    username = get_current_user()
+    chat_sessions = database.get_chat_sessions(username)
+    return render_template("chat.html", 
+                           chat_sessions=chat_sessions,
+                           current_session_id=None,
+                           chat_history=[],
+                           authenticated=True)
+
+@app.route("/chat/<int:session_id>", methods=["GET"])
+@login_required
+def chat_page(session_id):
+    """Load a specific chat session."""
+    username = get_current_user()
+    chat_sessions = database.get_chat_sessions(username)
+    
+    session_data = database.get_chat_session(session_id)
+    if not session_data or session_data["username"] != username:
+        return redirect(url_for("chat_index"))
+        
+    chat_history = json.loads(session_data["history_json"])
     
     return render_template("chat.html", 
-                           chat_history=session["chat_history"],
+                           chat_sessions=chat_sessions,
+                           current_session_id=session_id,
+                           chat_history=chat_history,
                            authenticated=True)
 
 @app.route("/chat", methods=["POST"])
@@ -328,12 +348,19 @@ def handle_chat():
     """Process an incoming chat message."""
     username = get_current_user()
     user_message = request.form.get("message", "").strip()
+    session_id = request.form.get("session_id", "").strip()
     
     if not user_message:
         return ""
         
-    if "chat_history" not in session:
-        session["chat_history"] = []
+    if session_id:
+        session_id = int(session_id)
+        session_data = database.get_chat_session(session_id)
+        if not session_data or session_data["username"] != username:
+            return "Unauthorized", 403
+        chat_history = json.loads(session_data["history_json"])
+    else:
+        chat_history = []
         
     # Get user's notes to build context
     notes = database.get_notes(username)
@@ -346,31 +373,44 @@ def handle_chat():
     # Generate AI response
     ai_response = ai_engine.chat_with_study_buddy(
         user_message, 
-        session["chat_history"], 
+        chat_history, 
         notes_context=context
     )
     
-    # Save to history (we only keep the last 10 messages to avoid huge session cookies)
-    history = session["chat_history"]
-    history.append({"role": "user", "content": user_message})
-    history.append({"role": "assistant", "content": ai_response})
+    # Save to history
+    chat_history.append({"role": "user", "content": user_message})
+    chat_history.append({"role": "assistant", "content": ai_response})
+    history_json = json.dumps(chat_history)
     
-    # Keep last 10 messages (5 exchanges)
-    session["chat_history"] = history[-10:]
-    session.modified = True
-    
-    # Render the new messages (both user and AI) as partials
-    return render_template("partials/chat_message.html", 
-                           user_msg=user_message, 
-                           ai_msg=ai_response)
+    if session_id:
+        # Update existing session
+        database.update_chat_session(session_id, history_json)
+        # Render the new messages (both user and AI) as partials
+        return render_template("partials/chat_message.html", 
+                               user_msg=user_message, 
+                               ai_msg=ai_response)
+    else:
+        # Create new session
+        title = user_message[:30] + "..." if len(user_message) > 30 else user_message
+        new_session_id = database.create_chat_session(username, title, history_json)
+        # Redirect to the new chat session page
+        response = app.make_response("")
+        response.headers["HX-Redirect"] = url_for("chat_page", session_id=new_session_id)
+        return response
 
-@app.route("/chat/clear", methods=["POST"])
+@app.route("/chat/<int:session_id>", methods=["DELETE"])
 @login_required
-def clear_chat():
-    """Clear chat history."""
-    session["chat_history"] = []
-    session.modified = True
-    return ""
+def delete_chat(session_id):
+    """Delete a chat session."""
+    username = get_current_user()
+    session_data = database.get_chat_session(session_id)
+    if session_data and session_data["username"] == username:
+        database.delete_chat_session(session_id)
+        
+    # Redirect back to the chat index
+    response = app.make_response("")
+    response.headers["HX-Redirect"] = url_for("chat_index")
+    return response
 
 
 # ── Error Handlers ────────────────────────────────────────────────────

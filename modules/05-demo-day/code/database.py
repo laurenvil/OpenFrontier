@@ -58,6 +58,17 @@ def init_db():
             uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (username) REFERENCES users(username)
         );
+
+        -- Chat sessions table
+        CREATE TABLE IF NOT EXISTS chat_sessions (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT NOT NULL,
+            title TEXT NOT NULL,
+            history_json TEXT NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (username) REFERENCES users(username)
+        );
     """)
     db.commit()
     db.close()
@@ -159,3 +170,60 @@ def delete_note(note_id):
     db.execute("DELETE FROM notes WHERE id = ?", (note_id,))
     db.commit()
     db.close()
+
+
+# ── Chat Session Operations ──────────────────────────────────────────
+
+def create_chat_session(username, title, history_json):
+    """Record a new chat session."""
+    db = get_db()
+    cursor = db.execute(
+        "INSERT INTO chat_sessions (username, title, history_json) VALUES (?, ?, ?)",
+        (username, title, history_json)
+    )
+    session_id = cursor.lastrowid
+    db.commit()
+    db.close()
+    return session_id
+
+
+def get_chat_sessions(username):
+    """Get all chat sessions for a user, ordered by most recently updated."""
+    db = get_db()
+    sessions = db.execute(
+        "SELECT * FROM chat_sessions WHERE username = ? ORDER BY updated_at DESC",
+        (username,)
+    ).fetchall()
+    db.close()
+    return sessions
+
+
+def get_chat_session(session_id):
+    """Get a specific chat session."""
+    db = get_db()
+    session = db.execute(
+        "SELECT * FROM chat_sessions WHERE id = ?",
+        (session_id,)
+    ).fetchone()
+    db.close()
+    return session
+
+
+def update_chat_session(session_id, history_json):
+    """Update the history and updated_at timestamp for a chat session."""
+    db = get_db()
+    db.execute(
+        "UPDATE chat_sessions SET history_json = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?",
+        (history_json, session_id)
+    )
+    db.commit()
+    db.close()
+
+
+def delete_chat_session(session_id):
+    """Delete a chat session by ID."""
+    db = get_db()
+    db.execute("DELETE FROM chat_sessions WHERE id = ?", (session_id,))
+    db.commit()
+    db.close()
+
