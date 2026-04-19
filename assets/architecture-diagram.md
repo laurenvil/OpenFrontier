@@ -1,6 +1,6 @@
 # Architecture Diagram
 
-This diagram shows how all four modules connect to form a complete local AI pipeline.
+This diagram shows how all five modules connect to form a complete local AI pipeline.
 
 ```mermaid
 graph TB
@@ -33,10 +33,24 @@ graph TB
         P --> L
     end
 
+    subgraph "Module 5 — Demo Day Capstone"
+        Q["Flask Web Server"]
+        R["SQLite DB (Users/History)"]
+        S["ChromaDB (Vector Search)"]
+        T["HTMX + DaisyUI Frontend"]
+        
+        T <--> Q
+        Q <--> R
+        Q <--> S
+        Q <--> H
+        Q <--> L
+    end
+
     style A fill:#4a90d9,color:#fff
     style F fill:#e67e22,color:#fff
     style H fill:#27ae60,color:#fff
     style L fill:#8e44ad,color:#fff
+    style Q fill:#c0392b,color:#fff
 ```
 
 ## How It Maps to Frontier Labs
