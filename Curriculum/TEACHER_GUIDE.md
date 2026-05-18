@@ -26,9 +26,9 @@
 
 ---
 
-## 3. The Sensai Open Classroom Model in Practice
+## 3. The Arduino Open Classroom Model in Practice
 
-Same three principles as every Sensai course:
+Same three principles as every Arduino course:
 
 1. **Hands-on learning.** This course is *especially* lab-heavy. Lecture <20%. The robots have to roll.
 2. **Real-world workflow.** Git/GitHub PRs with AutoGrader feedback. Students submit *systems*, not just sketches.
@@ -201,7 +201,7 @@ Each scored 1–4. Total /28 (mapped back to /100 for the gradebook).
 
 ### English Learners
 
-- The Linux/MPU side (Module 04+) is heavy on English error messages. Encourage Sensai-translated explanations.
+- The Linux/MPU side (Module 04+) is heavy on English error messages. Encourage AI-translated explanations.
 
 ### Advanced students
 
@@ -240,11 +240,11 @@ Detailed notes live in each module's [`LESSON_PLAN.md`](./modules). Read each le
 
 ---
 
-## 13. Working with the Sensai AI
+## 13. Working with AI Assistant
 
-Same posture as every Sensai course: model good prompts.
+Same posture as every Arduino course: model good prompts.
 
-### Robotics-specific Sensai prompts to model
+### Robotics-specific AI prompts to model
 
 - *"Explain why my encoder count goes negative when I drive forward."*
 - *"Help me design a state machine for 'find ball, push ball, return home.'"*
@@ -253,7 +253,7 @@ Same posture as every Sensai course: model good prompts.
 ### Redirect
 
 - *"Write the autonomy code for me."* — Ask for the state diagram first.
-- *"What hyperparameters should I use?"* — Push the student to reason about the trade-off Sensai cites.
+- *"What hyperparameters should I use?"* — Push the student to reason about the trade-off AI cites.
 
 ---
 
@@ -287,13 +287,13 @@ Before week 1:
 | UNO Q MPU unreachable via SSH | Power-cycle and check IP — confirm Wi-Fi association | Reachable but `arduino` user can't log in — escalate to IT |
 | All robots' models perform poorly | Lighting changed, or dataset shifted | Same issue across teams day-over-day — refresh classroom calibration |
 | LiPo bag smells | Evacuate area, kill power, follow district policy | Smoke or flame — district fire procedure |
-| Sensai confidently wrong on a safety topic | Stop, correct in class, log a curriculum issue | Repeats after correction — escalate to curriculum maintainers |
+| AI confidently wrong on a safety topic | Stop, correct in class, log a curriculum issue | Repeats after correction — escalate to curriculum maintainers |
 
 ---
 
 ## 17. Resources for Teachers
 
-- [Sensai Classes — Curriculum Master](../../README.md)
+- [Curriculum Master](../../README.md)
 - [Edge AI Robotics Curriculum Proposal](./Edge_AI_Robotics_Curriculum.md)
 - [Community Resources](../../community-resources/)
 - [Arduino Modulino Documentation](https://www.arduino.cc/) — Look for current Modulino product pages
@@ -307,7 +307,7 @@ Before week 1:
 
 | Date | Author | Change |
 |------|--------|--------|
-| 2026-05-17 | Sensai Curriculum | Initial guide |
+| 2026-05-17 | Arduino Curriculum | Initial guide |
 
 ---
 
