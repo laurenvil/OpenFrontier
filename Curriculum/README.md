@@ -99,7 +99,7 @@ Each module is worth **100 points**:
 | Implementation Mastery | 50 | Code passes all AutoGrader tests |
 | Community Contribution | 25 | A `.md` file added to `community-resources/` |
 
-Passing all three components makes you **credential-eligible** for a Sensai workforce micro-credential mapped to CSTA AI Learning Priorities and AI4K12 Five Big Ideas.
+Passing all three components makes you **credential-eligible** for an Arduino workforce micro-credential mapped to CSTA AI Learning Priorities and AI4K12 Five Big Ideas.
 
 ---
 
