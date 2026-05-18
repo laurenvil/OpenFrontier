@@ -10,7 +10,7 @@
 
 The course leverages the Arduino UNO Q's unique dual-brain architecture: a real-time microcontroller (MCU) for motor and sensor control, and a Linux-capable Qualcomm QRB2210 MPU for computer vision, ML inference, and networking. Standardized Arduino Modulino sensors plug in via I2C — no soldering, fast setup, more time spent on systems integration.
 
-**Hardware:** Arduino UNO Q + Modulino sensors + robot chassis &nbsp;·&nbsp; **Languages:** C++ (MCU), Python (MPU) &nbsp;·&nbsp; **Workflow:** Git + GitHub Actions + Sensai AI
+**Hardware:** Arduino UNO Q + Modulino sensors + robot chassis &nbsp;·&nbsp; **Languages:** C++ (MCU), Python (MPU) &nbsp;·&nbsp; **Workflow:** Git + GitHub Actions + AI
 
 For the complete framework, see the [Edge AI Robotics Curriculum Proposal](./Edge_AI_Robotics_Curriculum.md).
 
